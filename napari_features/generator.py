@@ -8,7 +8,7 @@ import skimage.segmentation
 
 def cache(wrapped):
     @functools.wraps(wrapped)
-    def f(generator: "Generator"):
+    def function(generator: Generator):
         name = wrapped.__name__
 
         if not (name in generator.cache):
@@ -16,7 +16,7 @@ def cache(wrapped):
 
         return generator.cache[name]
 
-    return f
+    return function
 
 
 class Generator:
