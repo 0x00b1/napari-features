@@ -84,122 +84,99 @@ class Generator:
         return self.image[self.object] * self.mask
 
     @property
-    def _color_object_edge_integrated_intensity(self):
+    def _feature_color_object_edge_integrated_intensity(self):
         return numpy.sum(self.edge)
 
     @property
-    def _color_object_edge_maximum_intensity(self):
+    def _feature_color_object_edge_maximum_intensity(self):
         return numpy.max(self.edge)
 
     @property
-    def _color_object_edge_mean_intensity(self):
+    def _feature_color_object_edge_mean_intensity(self):
         return numpy.mean(self.edge)
 
     @property
-    def _color_object_edge_median_intensity(self):
+    def _feature_color_object_edge_median_intensity(self):
         return numpy.median(self.edge)
 
     @property
-    def _color_object_edge_minimum_intensity(self):
+    def _feature_color_object_edge_minimum_intensity(self):
         return numpy.min(self.edge)
 
     @property
-    def _color_object_edge_quantile_1_intensity(self):
+    def _feature_color_object_edge_quantile_1_intensity(self):
         return numpy.quantile(self.edge, 0.25)
 
     @property
-    def _color_object_edge_quantile_3_intensity(self):
+    def _feature_color_object_edge_quantile_3_intensity(self):
         return numpy.quantile(self.edge, 0.75)
 
     @property
-    def _color_object_edge_standard_deviation_intensity(self):
+    def _feature_color_object_edge_standard_deviation_intensity(self):
         return numpy.std(self.edge)
 
     @property
-    def _color_object_center_mass_intensity_x(self):
+    def _feature_color_object_center_mass_intensity_x(self):
         return self
 
     @property
-    def _color_object_center_mass_intensity_y(self):
+    def _feature_color_object_center_mass_intensity_y(self):
         return self
 
     @property
-    def _color_object_integrated_intensity(self):
+    def _feature_color_object_integrated_intensity(self):
         return numpy.sum(self.masked)
 
     @property
-    def _color_object_mass_displacement(self):
+    def _feature_color_object_mass_displacement(self):
         return self
 
     @property
-    def _color_object_maximum_intensity(self):
+    def _feature_color_object_maximum_intensity(self):
         return numpy.max(self.masked)
 
     @property
-    def _color_object_maximum_intensity_x(self):
-        xs, _ = numpy.where(self.image == self._color_object_maximum_intensity)
+    def _feature_color_object_maximum_intensity_x(self):
+        xs, _ = numpy.where(self.image == self._feature_color_object_maximum_intensity)
 
         # If there are multiple matches, first match is returned.
         return xs[0]
 
     @property
-    def _color_object_maximum_intensity_y(self):
-        _, ys = numpy.where(self.image == self._color_object_maximum_intensity)
+    def _feature_color_object_maximum_intensity_y(self):
+        _, ys = numpy.where(self.image == self._feature_color_object_maximum_intensity)
 
         # If there are multiple matches, first match is returned.
         return ys[0]
 
     @property
-    def _color_object_mean_intensity(self):
+    def _feature_color_object_mean_intensity(self):
         return numpy.mean(self.masked)
 
     @property
-    def _color_object_median_absolute_deviation_intensity(self):
+    def _feature_color_object_median_absolute_deviation_intensity(self):
         return scipy.stats.median_absolute_deviation(self.masked)
 
     @property
-    def _color_object_median_intensity(self):
+    def _feature_color_object_median_intensity(self):
         return numpy.median(self.masked)
 
     @property
-    def _color_object_minimum_intensity(self):
+    def _feature_color_object_minimum_intensity(self):
         return numpy.min(self.masked)
 
     @property
-    def _color_object_quantile_1_intensity(self):
+    def _feature_color_object_quantile_1_intensity(self):
         return numpy.quantile(self.masked, 0.25)
 
     @property
-    def _color_object_quantile_3_intensity(self):
+    def _feature_color_object_quantile_3_intensity(self):
         return numpy.quantile(self.masked, 0.75)
 
     @property
-    def _color_object_standard_deviation_intensity(self):
+    def _feature_color_object_standard_deviation_intensity(self):
         return numpy.std(self.masked)
 
     @property
     def features(self):
-        return {
-            "color_object_center_mass_intensity_x": self._color_object_center_mass_intensity_x,
-            "color_object_center_mass_intensity_y": self._color_object_center_mass_intensity_y,
-            "color_object_edge_integrated_intensity": self._color_object_edge_integrated_intensity,
-            "color_object_edge_maximum_intensity": self._color_object_edge_maximum_intensity,
-            "color_object_edge_mean_intensity": self._color_object_edge_mean_intensity,
-            "color_object_edge_median_intensity": self._color_object_edge_median_intensity,
-            "color_object_edge_minimum_intensity": self._color_object_edge_minimum_intensity,
-            "color_object_edge_quantile_1_intensity": self._color_object_edge_quantile_1_intensity,
-            "color_object_edge_quantile_3_intensity": self._color_object_edge_quantile_3_intensity,
-            "color_object_edge_standard_deviation_intensity": self._color_object_edge_standard_deviation_intensity,
-            "color_object_integrated_intensity": self._color_object_integrated_intensity,
-            "color_object_mass_displacement": self._color_object_mass_displacement,
-            "color_object_maximum_intensity": self._color_object_maximum_intensity,
-            "color_object_maximum_intensity_x": self._color_object_maximum_intensity_x,
-            "color_object_maximum_intensity_y": self._color_object_maximum_intensity_y,
-            "color_object_mean_intensity": self._color_object_mean_intensity,
-            "color_object_median_absolute_deviation_intensity": self._color_object_median_absolute_deviation_intensity,
-            "color_object_median_intensity": self._color_object_median_intensity,
-            "color_object_minimum_intensity": self._color_object_minimum_intensity,
-            "color_object_quantile_1_intensity": self._color_object_quantile_1_intensity,
-            "color_object_quantile_3_intensity": self._color_object_quantile_3_intensity,
-            "color_object_standard_deviation_intensity": self._color_object_standard_deviation_intensity,
-        }
+        return []
