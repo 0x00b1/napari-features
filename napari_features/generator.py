@@ -1,4 +1,5 @@
 import functools
+import inspect
 
 import numpy
 import scipy.ndimage
@@ -8,7 +9,7 @@ import skimage.segmentation
 
 def cache(wrapped):
     @functools.wraps(wrapped)
-    def function(generator: Generator):
+    def function(generator: "Generator"):
         name = wrapped.__name__
 
         if not (name in generator.cache):
@@ -21,14 +22,6 @@ def cache(wrapped):
 
 class Generator:
     def __init__(self, label, image):
-        self._cropped = None
-
-        self._ndim = label.ndim
-
-        self._object_index = None
-
-        self._spatial_axes = tuple(range(self._ndim))
-
         self.cache = {}
 
         self.image = skimage.img_as_float32(image)
@@ -39,15 +32,21 @@ class Generator:
 
         self.object = None
 
+        self.object_index = None
+
         self.objects = scipy.ndimage.find_objects(label)
+
+        self._cropped = None
+
+        self._spatial_axes = tuple(range(label.ndim))
 
     def __iter__(self):
         for object_index, _object_slice in enumerate(self.objects):
-            self._object_index = object_index + 1
+            self.object_index = object_index + 1
 
             self.object = _object_slice
 
-            yield self.crop
+            yield self._generate()
 
     @property
     @cache
@@ -56,7 +55,7 @@ class Generator:
 
         stack = []
 
-        for index in range(self._ndim):
+        for index in range(self.label.ndim):
             stack += [indices[index] + self.object[index].start]
 
         return numpy.vstack(stack).T
@@ -82,6 +81,10 @@ class Generator:
     @cache
     def masked(self):
         return self.image[self.object] * self.mask
+
+    @property
+    def members(self):
+        return inspect.getmembers(self.__class__, lambda member: isinstance(member, property))
 
     @property
     def _feature_color_object_edge_integrated_intensity(self):
@@ -117,11 +120,11 @@ class Generator:
 
     @property
     def _feature_color_object_center_mass_intensity_x(self):
-        return self
+        return 0.0
 
     @property
     def _feature_color_object_center_mass_intensity_y(self):
-        return self
+        return 0.0
 
     @property
     def _feature_color_object_integrated_intensity(self):
@@ -129,7 +132,7 @@ class Generator:
 
     @property
     def _feature_color_object_mass_displacement(self):
-        return self
+        return 0.0
 
     @property
     def _feature_color_object_maximum_intensity(self):
@@ -155,7 +158,7 @@ class Generator:
 
     @property
     def _feature_color_object_median_absolute_deviation_intensity(self):
-        return scipy.stats.median_absolute_deviation(self.masked)
+        return 0.0
 
     @property
     def _feature_color_object_median_intensity(self):
@@ -178,5 +181,14 @@ class Generator:
         return numpy.std(self.masked)
 
     @property
-    def features(self):
-        return []
+    def _feature_metadata_object_index(self):
+        return self.object_index
+
+    def _generate(self):
+        features = {}
+
+        for k, v in self.members:
+            if k.startswith("_feature"):
+                features[k.replace("_feature", "")] = getattr(self, k)
+
+        return features
