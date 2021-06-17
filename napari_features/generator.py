@@ -87,12 +87,6 @@ class Generator:
         return self.image[self.object] * self.mask
 
     @property
-    def _members(self):
-        members = inspect.getmembers(self.__class__, lambda member: isinstance(member, property))
-
-        return sorted([k for k, _ in members if k.startswith("_feature_")])
-
-    @property
     def _feature_color_object_edge_integrated_intensity(self):
         return numpy.sum(self.edge)
 
@@ -189,3 +183,9 @@ class Generator:
     @property
     def _feature_metadata_object_index(self):
         return self.object_index
+
+    @property
+    def _members(self):
+        members = inspect.getmembers(self.__class__, lambda member: isinstance(member, property))
+
+        return sorted([k for k, _ in members if k.startswith("_feature_")])

@@ -1,17 +1,15 @@
 import magicgui.widgets
-import skimage.color
-from napari import Viewer
+import napari.types
 import napari_plugin_engine
+import numpy
 import pandas
 import qtpy.QtWidgets
-from napari.types import ImageData, LabelsData
-import numpy
 import skimage.color
 
 from .generator import Generator
 
 
-def featurize(x: ImageData, y: LabelsData, napari_viewer: Viewer):
+def featurize(x: napari.types.ImageData, y: napari.types.LabelsData, napari_viewer: napari.Viewer):
     if x.shape[-1] == 4:
         x = skimage.color.rgba2rgb(x)
         x = skimage.color.rgb2gray(x)
