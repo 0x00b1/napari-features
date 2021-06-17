@@ -1,58 +1,38 @@
 import magicgui.widgets
-import napari
+import skimage.color
+from napari import Viewer
 import napari_plugin_engine
-import napari.layers
 import pandas
 import qtpy.QtWidgets
+from napari.types import ImageData, LabelsData
+import numpy
+import skimage.color
 
 from .generator import Generator
 
 
-class Widget(qtpy.QtWidgets.QWidget):
-    def __init__(self, napari_viewer: napari.Viewer):
-        self.viewer = napari_viewer
+def featurize(x: ImageData, y: LabelsData, napari_viewer: Viewer):
+    if x.shape[-1] == 4:
+        x = skimage.color.rgba2rgb(x)
+        x = skimage.color.rgb2gray(x)
 
-        images = []
+    generator = Generator(numpy.asarray(y).astype(int), numpy.asarray(x))
 
-        for layer in self.viewer.layers:
-            if isinstance(layer, napari.layers.Image):
-                images.append(layer)
+    data = pandas.DataFrame([generated for generated in generator], columns=generator.names)
 
-        if images:
-            self.image = images[0]
-        else:
-            return
+    dock_widget = qtpy.QtWidgets.QWidget()
 
-        labels = []
+    dock_widget.setWindowTitle("Features")
 
-        for layer in self.viewer.layers:
-            if isinstance(layer, napari.layers.Labels):
-                labels.append(layer)
+    table = magicgui.widgets.Table(value=data.to_dict("list"))
 
-        if labels:
-            self.labels = labels[0]
-        else:
-            return
+    dock_widget.setLayout(qtpy.QtWidgets.QGridLayout())
 
-        generator = Generator(self.image.data, self.labels.data)
+    dock_widget.layout().addWidget(table.native)
 
-        data = [generated for generated in generator]
-
-        data = pandas.DataFrame(data, columns=generator.names)
-
-        super().__init__()
-
-        self.setWindowTitle("Features")
-
-        table = magicgui.widgets.Table(value=data.to_dict("list"))
-
-        layout = qtpy.QtWidgets.QGridLayout()
-
-        layout.addWidget(table.native)
-
-        self.setLayout(layout)
+    napari_viewer.window.add_dock_widget(dock_widget, area="bottom")
 
 
 @napari_plugin_engine.napari_hook_implementation
-def napari_experimental_provide_dock_widget():
-    return Widget
+def napari_experimental_provide_function():
+    return [featurize]
