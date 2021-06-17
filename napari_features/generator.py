@@ -46,7 +46,7 @@ class Generator:
 
             self.object = _object_slice
 
-            yield self._generate()
+            yield [getattr(self, member) for member in self._members]
 
     @property
     @cache
@@ -73,6 +73,10 @@ class Generator:
         return self.crop * boundary
 
     @property
+    def names(self):
+        return [member.replace("_feature_", "") for member in self._members]
+
+    @property
     @cache
     def mask(self):
         return self.label[self.object] > 0
@@ -83,8 +87,10 @@ class Generator:
         return self.image[self.object] * self.mask
 
     @property
-    def members(self):
-        return inspect.getmembers(self.__class__, lambda member: isinstance(member, property))
+    def _members(self):
+        members = inspect.getmembers(self.__class__, lambda member: isinstance(member, property))
+
+        return sorted([k for k, _ in members if k.startswith("_feature_")])
 
     @property
     def _feature_color_object_edge_integrated_intensity(self):
@@ -183,12 +189,3 @@ class Generator:
     @property
     def _feature_metadata_object_index(self):
         return self.object_index
-
-    def _generate(self):
-        features = {}
-
-        for k, v in self.members:
-            if k.startswith("_feature"):
-                features[k.replace("_feature", "")] = getattr(self, k)
-
-        return features
