@@ -49,6 +49,10 @@ class Generator:
             yield [getattr(self, member) for member in self._members]
 
     @property
+    def columns(self):
+        return [member.replace("_feature_", "") for member in self._members]
+
+    @property
     @cache
     def coordinates(self):
         indices = numpy.nonzero(self.image)
@@ -71,10 +75,6 @@ class Generator:
         boundary = skimage.segmentation.find_boundaries(self.mask, mode="outer")
 
         return self.crop * boundary
-
-    @property
-    def names(self):
-        return [member.replace("_feature_", "") for member in self._members]
 
     @property
     @cache

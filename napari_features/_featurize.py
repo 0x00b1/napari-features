@@ -16,7 +16,7 @@ def featurize(x: napari.types.ImageData, y: napari.types.LabelsData, napari_view
 
     generator = Generator(numpy.asarray(y).astype(int), numpy.asarray(x))
 
-    data = pandas.DataFrame([generated for generated in generator], columns=generator.names)
+    data = pandas.DataFrame([generated for generated in generator], columns=generator.columns)
 
     dock_widget = qtpy.QtWidgets.QWidget()
 
