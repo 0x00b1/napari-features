@@ -86,6 +86,48 @@ class Generator:
     def masked(self):
         return self.image[self.object] * self.mask
 
+    # Color
+
+    # Color: Image
+
+    @property
+    def _feature_color_image_integrated_intensity(self):
+        return numpy.sum(self.image)
+
+    @property
+    def _feature_color_image_maximum_intensity(self):
+        return numpy.max(self.image)
+
+    @property
+    def _feature_color_image_mean_intensity(self):
+        return numpy.mean(self.image)
+
+    @property
+    def _feature_color_image_median_absolute_deviation_intensity(self):
+        return scipy.stats.median_absolute_deviation(self.image.reshape(-1, ))
+
+    @property
+    def _feature_color_image_median_intensity(self):
+        return numpy.median(self.image)
+
+    @property
+    def _feature_color_image_minimum_intensity(self):
+        return numpy.min(self.image)
+
+    @property
+    def _feature_color_image_quantile_1_intensity(self):
+        return numpy.quantile(self.image, 0.25)
+
+    @property
+    def _feature_color_image_quantile_3_intensity(self):
+        return numpy.quantile(self.image, 0.75)
+
+    @property
+    def _feature_color_image_standard_deviation_intensity(self):
+        return numpy.std(self.image)
+
+    # Color: Object
+
     @property
     def _feature_color_object_edge_integrated_intensity(self):
         return numpy.sum(self.edge)
@@ -159,7 +201,7 @@ class Generator:
 
     @property
     def _feature_color_object_median_absolute_deviation_intensity(self):
-        return scipy.stats.median_absolute_deviation(self.masked.reshape(-1,))
+        return scipy.stats.median_absolute_deviation(self.masked.reshape(-1, ))
 
     @property
     def _feature_color_object_median_intensity(self):
@@ -181,9 +223,77 @@ class Generator:
     def _feature_color_object_standard_deviation_intensity(self):
         return numpy.std(self.masked)
 
+    # Location
+
+    # Location: Object neighborhood
+
+    @property
+    def _feature_location_object_neighborhood_angle(self):
+        return 0.0
+
+    @property
+    def _feature_location_object_neighborhood_closest_0_distance(self):
+        return 0.0
+
+    @property
+    def _feature_location_object_neighborhood_closest_0_object_index(self):
+        return 0.0
+
+    @property
+    def _feature_location_object_neighborhood_closest_1_distance(self):
+        return 0.0
+
+    @property
+    def _feature_location_object_neighborhood_closest_1_object_index(self):
+        return 0.0
+
+    @property
+    def _feature_location_object_neighborhood_closest_2_distance(self):
+        return 0.0
+
+    @property
+    def _feature_location_object_neighborhood_closest_2_object_index(self):
+        return 0.0
+
+    @property
+    def _feature_location_object_neighborhood_neighbors(self):
+        return 0.0
+
+    @property
+    def _feature_location_object_neighborhood_touching(self):
+        return 0.0
+
+    # Metadata
+
+    # Metadata: Image
+
+    @property
+    def _feature_metadata_image_checksum(self):
+        return 0.0
+
+    @property
+    def _feature_metadata_image_filename(self):
+        return 0.0
+
+    # Metadata: Layer
+
+    @property
+    def _feature_metadata_layer_name(self):
+        return 0.0
+
+    @property
+    def _feature_metadata_layer_type(self):
+        return 0.0
+
+    # Metadata: Object
+
     @property
     def _feature_metadata_object_index(self):
         return self.object_index
+
+    # Shape
+
+    # Shape: Image
 
     @property
     def _feature_shape_image_area(self):
@@ -191,6 +301,26 @@ class Generator:
             return numpy.product(numpy.product(self.image.shape[:-1]))
         else:
             return numpy.product(numpy.product(self.image.shape))
+
+    # Shape: Image skeleton
+
+    @property
+    def _feature_shape_image_skeleton_branches(self):
+        return 0.0
+
+    @property
+    def _feature_shape_image_skeleton_endpoints(self):
+        return 0.0
+
+    @property
+    def _feature_shape_image_skeleton_length(self):
+        return 0.0
+
+    @property
+    def _feature_shape_image_skeleton_trunks(self):
+        return 0.0
+
+    # Shape: Object
 
     @property
     def _feature_shape_object_area(self):
@@ -513,15 +643,85 @@ class Generator:
         return 0.0
 
     @property
-    def shape_object_surface_area(self):
+    def _feature_shape_object_surface_area(self):
         return 0.0
 
     @property
-    def shape_object_volume(self):
+    def _feature_shape_object_volume(self):
+        return 0.0
+
+    # Shape: Object skeleton
+
+    @property
+    def _feature_shape_object_skeleton_endpoints(self):
         return 0.0
 
     @property
-    def shape_object_zernike_shape_features(self):
+    def _feature_shape_object_skeleton_branches(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_skeleton_length(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_skeleton_trunks(self):
+        return 0.0
+
+    # Texture
+
+    # Texture: Object
+
+    @property
+    def _feature_texture_object_haralick_angular_second_moment(self):
+        return 0.0
+
+    @property
+    def _feature_texture_object_haralick_contrast(self):
+        return 0.0
+
+    @property
+    def _feature_texture_object_haralick_coorelation(self):
+        return 0.0
+
+    @property
+    def _feature_texture_object_haralick_sum_of_squares_variance(self):
+        return 0.0
+
+    @property
+    def _feature_texture_object_haralick_inverse_difference_moment(self):
+        return 0.0
+
+    @property
+    def _feature_texture_object_haralick_sum_average(self):
+        return 0.0
+
+    @property
+    def _feature_texture_object_haralick_sum_variance(self):
+        return 0.0
+
+    @property
+    def _feature_texture_object_haralick_sum_entropy(self):
+        return 0.0
+
+    @property
+    def _feature_texture_object_haralick_entropy(self):
+        return 0.0
+
+    @property
+    def _feature_texture_object_haralick_difference_variance(self):
+        return 0.0
+
+    @property
+    def _feature_texture_object_haralick_measure_of_correlation_0(self):
+        return 0.0
+
+    @property
+    def _feature_texture_object_haralick_measure_of_correlation_1(self):
+        return 0.0
+
+    @property
+    def _feature_texture_object_haralick_maximum_correlation_coefficient(self):
         return 0.0
 
     @property
