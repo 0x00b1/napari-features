@@ -1,3 +1,4 @@
+import collections.abc
 import functools
 import inspect
 
@@ -20,7 +21,7 @@ def cache(wrapped):
     return function
 
 
-class Generator:
+class Generator(collections.abc.Iterator):
     def __init__(self, label, image):
         self.cache = {}
 
@@ -32,7 +33,7 @@ class Generator:
 
         self.object = None
 
-        self.object_index = None
+        self.object_index = 0
 
         self.objects = scipy.ndimage.find_objects(label)
 
@@ -41,12 +42,17 @@ class Generator:
         self._spatial_axes = tuple(range(label.ndim))
 
     def __iter__(self):
-        for object_index, _object_slice in enumerate(self.objects):
-            self.object_index = object_index + 1
+        return self
 
-            self.object = _object_slice
+    def __next__(self):
+        try:
+            self.object = self.objects[self.object_index]
+        except IndexError:
+            raise StopIteration
 
-            yield [getattr(self, member) for member in self._members]
+        self.object_index = self.object_index + 1
+
+        return [getattr(self, member) for member in self._members]
 
     @property
     def columns(self):
