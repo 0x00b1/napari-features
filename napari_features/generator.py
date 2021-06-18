@@ -135,6 +135,7 @@ class Generator:
         return 0.0
 
     @property
+    @cache
     def _feature_color_object_maximum_intensity(self):
         return numpy.max(self.masked)
 
@@ -158,7 +159,7 @@ class Generator:
 
     @property
     def _feature_color_object_median_absolute_deviation_intensity(self):
-        return 0.0
+        return scipy.stats.median_absolute_deviation(self.masked.reshape(-1,))
 
     @property
     def _feature_color_object_median_intensity(self):
@@ -183,6 +184,345 @@ class Generator:
     @property
     def _feature_metadata_object_index(self):
         return self.object_index
+
+    @property
+    def _feature_shape_image_area(self):
+        if self.multichannel:
+            return numpy.product(numpy.product(self.image.shape[:-1]))
+        else:
+            return numpy.product(numpy.product(self.image.shape))
+
+    @property
+    def _feature_shape_object_area(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_bounding_box_area(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_bounding_box_maximum_x(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_bounding_box_maximum_y(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_bounding_box_maximum_z(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_bounding_box_minimum_x(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_bounding_box_minimum_y(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_bounding_box_minimum_z(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_bounding_box_volume(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_central_moment_0_0_0(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_central_moment_0_0_1(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_central_moment_0_1_2(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_central_moment_0_1_3(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_central_moment_1_2_0(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_central_moment_1_2_1(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_central_moment_1_3_2(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_central_moment_1_3_3(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_central_moment_2_0_0(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_central_moment_2_0_1(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_central_moment_2_1_2(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_central_moment_2_1_3(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_central_moment_3_2_0(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_central_moment_3_2_1(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_central_moment_3_3_2(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_central_moment_3_3_3(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_centroid_x(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_centroid_y(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_centroid_z(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_compactness(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_eccentricity(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_equivalent_diameter(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_euler_number(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_extent(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_form_factor(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_hu_moment_0(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_hu_moment_1(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_hu_moment_2(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_hu_moment_3(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_hu_moment_4(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_hu_moment_5(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_hu_moment_6(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_inertia_tensor_eigenvalues_x(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_inertia_tensor_eigenvalues_y(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_inertia_tensor_eigenvalues_z(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_inertia_tensor_x_x(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_inertia_tensor_x_y(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_inertia_tensor_x_z(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_inertia_tensor_y_x(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_inertia_tensor_y_y(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_inertia_tensor_y_z(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_inertia_tensor_z_x(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_inertia_tensor_z_y(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_inertia_tensor_z_z(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_major_axis_length(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_maximum_feret_diameter(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_maximum_radius(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_mean_radius(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_median_radius(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_minimum_feret_diameter(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_minor_axis_length(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_normalized_moment_x_y(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_orientation(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_perimeter(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_solidity(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_spatial_moment_0_0_0(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_spatial_moment_0_0_1(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_spatial_moment_0_1_2(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_spatial_moment_0_1_3(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_spatial_moment_1_2_0(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_spatial_moment_1_2_1(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_spatial_moment_1_3_2(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_spatial_moment_1_3_3(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_spatial_moment_2_0_0(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_spatial_moment_2_0_1(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_spatial_moment_2_1_2(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_spatial_moment_2_1_3(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_spatial_moment_3_2_0(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_spatial_moment_3_2_1(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_spatial_moment_3_3_2(self):
+        return 0.0
+
+    @property
+    def _feature_shape_object_spatial_moment_3_3_3(self):
+        return 0.0
+
+    @property
+    def shape_object_surface_area(self):
+        return 0.0
+
+    @property
+    def shape_object_volume(self):
+        return 0.0
+
+    @property
+    def shape_object_zernike_shape_features(self):
+        return 0.0
 
     @property
     def _members(self):
