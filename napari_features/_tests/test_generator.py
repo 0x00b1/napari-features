@@ -1,6 +1,3 @@
-import numpy
-
-
 class TestGenerator:
     def test_columns(self):
         assert True
