@@ -187,7 +187,7 @@ class TestGenerator:
     # Metadata: Object
 
     def test__feature_metadata_object_index(self, generator):
-        assert generator._feature_metadata_object_index == 0
+        assert generator._feature_metadata_object_index == 1
 
     # Shape
 

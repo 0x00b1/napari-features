@@ -33,7 +33,7 @@ class Generator(collections.abc.Iterator):
 
         self.object = None
 
-        self.object_index = 0
+        self.object_index = 1  # skip background (`0`)
 
         self.objects = scipy.ndimage.find_objects(label)
 
