@@ -9,7 +9,7 @@ import skimage.color
 from .generator import Generator
 
 
-def featurize(x: napari.types.ImageData, y: napari.types.LabelsData, napari_viewer: napari.Viewer):
+def features(x: napari.types.ImageData, y: napari.types.LabelsData, napari_viewer: napari.Viewer):
     if x.shape[-1] == 4:
         x = skimage.color.rgba2rgb(x)
         x = skimage.color.rgb2gray(x)
@@ -33,4 +33,4 @@ def featurize(x: napari.types.ImageData, y: napari.types.LabelsData, napari_view
 
 @napari_plugin_engine.napari_hook_implementation
 def napari_experimental_provide_function():
-    return [featurize]
+    return [features]
