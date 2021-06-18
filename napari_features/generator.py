@@ -86,6 +86,8 @@ class Generator:
     def masked(self):
         return self.image[self.object] * self.mask
 
+    # General-purpose features
+
     # Color
 
     # Color: Image
