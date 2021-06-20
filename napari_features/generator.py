@@ -1,11 +1,15 @@
 import collections.abc
 import functools
 import inspect
+import math
 
 import numpy
 import scipy.ndimage
 import scipy.stats
+import skimage.measure
+import skimage.morphology
 import skimage.segmentation
+import skimage.measure
 
 
 def cache(wrapped):
@@ -31,11 +35,13 @@ class Generator(collections.abc.Iterator):
 
         self.multichannel = label.shape < image.shape
 
-        self.object = None
+        self.objects = scipy.ndimage.find_objects(label)
 
         self.object_index = 1  # skip background (`0`)
 
-        self.objects = scipy.ndimage.find_objects(label)
+        self.object = self.objects[self.object_index - 1]
+
+        self.volumetric = False
 
         self._cropped = None
 
@@ -46,7 +52,7 @@ class Generator(collections.abc.Iterator):
 
     def __next__(self):
         try:
-            self.object = self.objects[self.object_index]
+            self.object = self.objects[self.object_index - 1]
         except IndexError:
             raise StopIteration
 
@@ -55,8 +61,28 @@ class Generator(collections.abc.Iterator):
         return [getattr(self, member) for member in self._members]
 
     @property
+    @cache
+    def area(self):
+        return numpy.sum(self.label)
+
+    @property
+    @cache
+    def central_moments(self):
+        return skimage.measure.moments_central(self.label.astype(numpy.uint8), self.local_centroid, order=3)
+
+    @property
+    @cache
+    def centroid(self):
+        return self.coordinates.mean(axis=0)
+
+    @property
     def columns(self):
         return [member.replace("_feature_", "") for member in self._members]
+
+    @property
+    @cache
+    def convex_hull(self):
+        return skimage.morphology.convex_hull_image(self.mask)
 
     @property
     @cache
@@ -84,13 +110,44 @@ class Generator(collections.abc.Iterator):
 
     @property
     @cache
+    def inertia_tensor(self):
+        return skimage.measure.inertia_tensor(self.image, self.central_moments)
+
+    @property
+    @cache
+    def inertia_tensor_eigenvalues(self):
+        return skimage.measure.inertia_tensor_eigvals(self.label, T=self.inertia_tensor)
+
+    @property
+    @cache
+    def local_centroid(self):
+        spatial_moments = self.spatial_moments
+
+        return tuple(spatial_moments[tuple(numpy.eye(self.label.ndim, dtype=int))] / spatial_moments[(0,) * self.label.ndim])
+
+    @property
+    @cache
     def mask(self):
-        return self.label[self.object] > 0
+        return numpy.squeeze(self.label[self.object]) > 0
 
     @property
     @cache
     def masked(self):
         return self.image[self.object] * self.mask
+
+    @property
+    @cache
+    def spatial_moments(self):
+        m = skimage.measure.moments(skimage.img_as_ubyte(self.masked), 3)
+
+        if not self.volumetric:
+            v = numpy.zeros((4, 4, 4))
+
+            v[0] = m
+
+            return v
+
+        return m
 
     # General-purpose features
 
@@ -432,11 +489,11 @@ class Generator(collections.abc.Iterator):
 
     @property
     def _feature_shape_object_centroid_x(self):
-        return 0.0
+        return self.centroid[0]
 
     @property
     def _feature_shape_object_centroid_y(self):
-        return 0.0
+        return self.centroid[1]
 
     @property
     def _feature_shape_object_centroid_z(self):
@@ -452,15 +509,15 @@ class Generator(collections.abc.Iterator):
 
     @property
     def _feature_shape_object_equivalent_diameter(self):
-        return 0.0
+        return (2 * self.label.ndim * self.area / math.pi) ** (1 / self.label.ndim)
 
     @property
     def _feature_shape_object_euler_number(self):
-        return 0.0
+        return skimage.measure.euler_number(self.label, self.label.ndim)
 
     @property
     def _feature_shape_object_extent(self):
-        return 0.0
+        return self.area / self.label.size
 
     @property
     def _feature_shape_object_form_factor(self):
@@ -588,67 +645,259 @@ class Generator(collections.abc.Iterator):
 
     @property
     def _feature_shape_object_spatial_moment_0_0_0(self):
-        return 0.0
+        return self.spatial_moments[0, 0, 0]
 
     @property
     def _feature_shape_object_spatial_moment_0_0_1(self):
-        return 0.0
+        return self.spatial_moments[0, 0, 1]
+
+    @property
+    def _feature_shape_object_spatial_moment_0_0_2(self):
+        return self.spatial_moments[0, 0, 2]
+
+    @property
+    def _feature_shape_object_spatial_moment_0_0_3(self):
+        return self.spatial_moments[0, 0, 3]
+
+    @property
+    def _feature_shape_object_spatial_moment_0_1_0(self):
+        return self.spatial_moments[0, 1, 0]
+
+    @property
+    def _feature_shape_object_spatial_moment_0_1_1(self):
+        return self.spatial_moments[0, 1, 1]
 
     @property
     def _feature_shape_object_spatial_moment_0_1_2(self):
-        return 0.0
+        return self.spatial_moments[0, 1, 2]
 
     @property
     def _feature_shape_object_spatial_moment_0_1_3(self):
-        return 0.0
+        return self.spatial_moments[0, 1, 3]
+
+    @property
+    def _feature_shape_object_spatial_moment_0_2_0(self):
+        return self.spatial_moments[0, 2, 0]
+
+    @property
+    def _feature_shape_object_spatial_moment_0_2_1(self):
+        return self.spatial_moments[0, 2, 1]
+
+    @property
+    def _feature_shape_object_spatial_moment_0_2_2(self):
+        return self.spatial_moments[0, 2, 2]
+
+    @property
+    def _feature_shape_object_spatial_moment_0_2_3(self):
+        return self.spatial_moments[0, 2, 3]
+
+    @property
+    def _feature_shape_object_spatial_moment_0_3_0(self):
+        return self.spatial_moments[0, 3, 0]
+
+    @property
+    def _feature_shape_object_spatial_moment_0_3_1(self):
+        return self.spatial_moments[0, 3, 1]
+
+    @property
+    def _feature_shape_object_spatial_moment_0_3_2(self):
+        return self.spatial_moments[0, 3, 2]
+
+    @property
+    def _feature_shape_object_spatial_moment_0_3_3(self):
+        return self.spatial_moments[0, 3, 3]
+
+    @property
+    def _feature_shape_object_spatial_moment_1_0_0(self):
+        return self.spatial_moments[1, 0, 0]
+
+    @property
+    def _feature_shape_object_spatial_moment_1_0_1(self):
+        return self.spatial_moments[1, 0, 1]
+
+    @property
+    def _feature_shape_object_spatial_moment_1_0_2(self):
+        return self.spatial_moments[1, 0, 2]
+
+    @property
+    def _feature_shape_object_spatial_moment_1_0_3(self):
+        return self.spatial_moments[1, 0, 3]
+
+    @property
+    def _feature_shape_object_spatial_moment_1_1_0(self):
+        return self.spatial_moments[1, 1, 0]
+
+    @property
+    def _feature_shape_object_spatial_moment_1_1_1(self):
+        return self.spatial_moments[1, 1, 1]
+
+    @property
+    def _feature_shape_object_spatial_moment_1_1_2(self):
+        return self.spatial_moments[1, 1, 2]
+
+    @property
+    def _feature_shape_object_spatial_moment_1_1_3(self):
+        return self.spatial_moments[1, 1, 3]
 
     @property
     def _feature_shape_object_spatial_moment_1_2_0(self):
-        return 0.0
+        return self.spatial_moments[1, 2, 0]
 
     @property
     def _feature_shape_object_spatial_moment_1_2_1(self):
-        return 0.0
+        return self.spatial_moments[1, 2, 1]
+
+    @property
+    def _feature_shape_object_spatial_moment_1_2_2(self):
+        return self.spatial_moments[1, 2, 2]
+
+    @property
+    def _feature_shape_object_spatial_moment_1_2_3(self):
+        return self.spatial_moments[1, 2, 3]
+
+    @property
+    def _feature_shape_object_spatial_moment_1_3_0(self):
+        return self.spatial_moments[1, 3, 0]
+
+    @property
+    def _feature_shape_object_spatial_moment_1_3_1(self):
+        return self.spatial_moments[1, 3, 1]
 
     @property
     def _feature_shape_object_spatial_moment_1_3_2(self):
-        return 0.0
+        return self.spatial_moments[1, 3, 2]
 
     @property
     def _feature_shape_object_spatial_moment_1_3_3(self):
-        return 0.0
+        return self.spatial_moments[1, 3, 3]
 
     @property
     def _feature_shape_object_spatial_moment_2_0_0(self):
-        return 0.0
+        return self.spatial_moments[2, 0, 0]
 
     @property
     def _feature_shape_object_spatial_moment_2_0_1(self):
-        return 0.0
+        return self.spatial_moments[2, 0, 1]
+
+    @property
+    def _feature_shape_object_spatial_moment_2_0_2(self):
+        return self.spatial_moments[2, 0, 2]
+
+    @property
+    def _feature_shape_object_spatial_moment_2_0_3(self):
+        return self.spatial_moments[2, 0, 3]
+
+    @property
+    def _feature_shape_object_spatial_moment_2_1_0(self):
+        return self.spatial_moments[2, 1, 0]
+
+    @property
+    def _feature_shape_object_spatial_moment_2_1_1(self):
+        return self.spatial_moments[2, 1, 1]
 
     @property
     def _feature_shape_object_spatial_moment_2_1_2(self):
-        return 0.0
+        return self.spatial_moments[2, 1, 2]
 
     @property
     def _feature_shape_object_spatial_moment_2_1_3(self):
-        return 0.0
+        return self.spatial_moments[2, 1, 3]
+
+    @property
+    def _feature_shape_object_spatial_moment_2_2_0(self):
+        return self.spatial_moments[2, 2, 0]
+
+    @property
+    def _feature_shape_object_spatial_moment_2_2_1(self):
+        return self.spatial_moments[2, 2, 1]
+
+    @property
+    def _feature_shape_object_spatial_moment_2_2_2(self):
+        return self.spatial_moments[2, 2, 2]
+
+    @property
+    def _feature_shape_object_spatial_moment_2_2_3(self):
+        return self.spatial_moments[2, 2, 3]
+
+    @property
+    def _feature_shape_object_spatial_moment_2_3_0(self):
+        return self.spatial_moments[2, 3, 0]
+
+    @property
+    def _feature_shape_object_spatial_moment_2_3_1(self):
+        return self.spatial_moments[2, 3, 1]
+
+    @property
+    def _feature_shape_object_spatial_moment_2_3_2(self):
+        return self.spatial_moments[2, 3, 2]
+
+    @property
+    def _feature_shape_object_spatial_moment_2_3_3(self):
+        return self.spatial_moments[2, 3, 3]
+
+    @property
+    def _feature_shape_object_spatial_moment_3_0_0(self):
+        return self.spatial_moments[3, 0, 0]
+
+    @property
+    def _feature_shape_object_spatial_moment_3_0_1(self):
+        return self.spatial_moments[3, 0, 1]
+
+    @property
+    def _feature_shape_object_spatial_moment_3_0_2(self):
+        return self.spatial_moments[3, 0, 2]
+
+    @property
+    def _feature_shape_object_spatial_moment_3_0_3(self):
+        return self.spatial_moments[3, 0, 3]
+
+    @property
+    def _feature_shape_object_spatial_moment_3_1_0(self):
+        return self.spatial_moments[3, 1, 0]
+
+    @property
+    def _feature_shape_object_spatial_moment_3_1_1(self):
+        return self.spatial_moments[3, 1, 1]
+
+    @property
+    def _feature_shape_object_spatial_moment_3_1_2(self):
+        return self.spatial_moments[3, 1, 2]
+
+    @property
+    def _feature_shape_object_spatial_moment_3_1_3(self):
+        return self.spatial_moments[3, 1, 3]
 
     @property
     def _feature_shape_object_spatial_moment_3_2_0(self):
-        return 0.0
+        return self.spatial_moments[3, 2, 0]
 
     @property
     def _feature_shape_object_spatial_moment_3_2_1(self):
-        return 0.0
+        return self.spatial_moments[3, 2, 1]
+
+    @property
+    def _feature_shape_object_spatial_moment_3_2_2(self):
+        return self.spatial_moments[3, 2, 2]
+
+    @property
+    def _feature_shape_object_spatial_moment_3_2_3(self):
+        return self.spatial_moments[3, 2, 3]
+
+    @property
+    def _feature_shape_object_spatial_moment_3_3_0(self):
+        return self.spatial_moments[3, 3, 0]
+
+    @property
+    def _feature_shape_object_spatial_moment_3_3_1(self):
+        return self.spatial_moments[3, 3, 1]
 
     @property
     def _feature_shape_object_spatial_moment_3_3_2(self):
-        return 0.0
+        return self.spatial_moments[3, 3, 2]
 
     @property
     def _feature_shape_object_spatial_moment_3_3_3(self):
-        return 0.0
+        return self.spatial_moments[3, 3, 3]
 
     @property
     def _feature_shape_object_surface_area(self):
