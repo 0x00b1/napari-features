@@ -20,7 +20,7 @@ def cache(wrapped):
     return function
 
 
-class Generator(collections.abc.Iterator):
+class Generator(collections.abc.Iterator[V]):
     cache: dict[str, object] = {}
 
     images: dict[str, numpy.array] = {}
