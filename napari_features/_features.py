@@ -6,28 +6,44 @@ import pandas
 
 from ._dock_widget import DockWidget
 
+COLUMNS = [
+    "id",
+    "name",
+    "path",
+]
+
 
 def features(viewer: napari.Viewer):
-    data = pandas.DataFrame(columns=["image", "masks"])
-
     dock_widget = DockWidget()
 
+    viewer.window.add_dock_widget(dock_widget, area="bottom")
+
+    data = pandas.DataFrame(columns=COLUMNS)
+
+    data.set_index("id", inplace=True)
+
     @viewer.layers.events.connect
-    def generate(event: napari.utils.events.event.Event):
-        if event.type not in {"changed", "inserted", "removed"}:
+    def insert(event: napari.utils.events.event.Event):
+        if event.type != "inserted":
+            return
+
+        for layer in viewer.layers:
+            if isinstance(layer, napari.layers.Image):
+                data.loc[id(layer)] = [layer.name, layer.source.path]
+
+        dock_widget.table.value = data
+
+    @viewer.layers.events.connect
+    def remove(event: napari.utils.events.event.Event):
+        if event.type != "removing":
             return
 
         source = event.source[0]
 
         if isinstance(source, napari.layers.Image):
-            data.loc[len(data.index)] = ["image.png", "masks.png"]
-
-        if isinstance(source, napari.layers.Labels):
-            data.loc[len(data.index)] = ["image.png", "masks.png"]
+            data.drop(id(source), inplace=True)
 
         dock_widget.table.value = data
-
-    viewer.window.add_dock_widget(dock_widget, area="bottom")
 
 
 @napari_plugin_engine.napari_hook_implementation
