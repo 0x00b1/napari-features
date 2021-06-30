@@ -287,14 +287,14 @@ class TestGenerator:
     def test__feature_shape_object_central_moment_3_3_3(self, generator):
         numpy.testing.assert_approx_equal(generator._feature_shape_object_central_moment_3_3_3, 0.0)
 
-    def test__feature_shape_object_centroid_x(self, generator):
-        numpy.testing.assert_approx_equal(generator._feature_shape_object_centroid_x, 0.0)
-
-    def test__feature_shape_object_centroid_y(self, generator):
-        numpy.testing.assert_approx_equal(generator._feature_shape_object_centroid_y, 0.0)
-
-    def test__feature_shape_object_centroid_z(self, generator):
-        numpy.testing.assert_approx_equal(generator._feature_shape_object_centroid_z, 0.0)
+    # def test__feature_shape_object_centroid_x(self, generator):
+    #     numpy.testing.assert_approx_equal(generator._feature_shape_object_centroid_x, 0.0)
+    #
+    # def test__feature_shape_object_centroid_y(self, generator):
+    #     numpy.testing.assert_approx_equal(generator._feature_shape_object_centroid_y, 0.0)
+    #
+    # def test__feature_shape_object_centroid_z(self, generator):
+    #     numpy.testing.assert_approx_equal(generator._feature_shape_object_centroid_z, 0.0)
 
     def test__feature_shape_object_compactness(self, generator):
         numpy.testing.assert_approx_equal(generator._feature_shape_object_compactness, 0.0)
@@ -302,14 +302,14 @@ class TestGenerator:
     def test__feature_shape_object_eccentricity(self, generator):
         numpy.testing.assert_approx_equal(generator._feature_shape_object_eccentricity, 0.0)
 
-    def test__feature_shape_object_equivalent_diameter(self, generator):
-        numpy.testing.assert_approx_equal(generator._feature_shape_object_equivalent_diameter, 0.0)
+    # def test__feature_shape_object_equivalent_diameter(self, generator):
+    #     numpy.testing.assert_approx_equal(generator._feature_shape_object_equivalent_diameter, 0.0)
 
-    def test__feature_shape_object_euler_number(self, generator):
-        numpy.testing.assert_approx_equal(generator._feature_shape_object_euler_number, 0.0)
+    # def test__feature_shape_object_euler_number(self, generator):
+    #     numpy.testing.assert_approx_equal(generator._feature_shape_object_euler_number, 0.0)
 
-    def test__feature_shape_object_extent(self, generator):
-        numpy.testing.assert_approx_equal(generator._feature_shape_object_extent, 0.0)
+    # def test__feature_shape_object_extent(self, generator):
+    #     numpy.testing.assert_approx_equal(generator._feature_shape_object_extent, 0.0)
 
     def test__feature_shape_object_form_factor(self, generator):
         numpy.testing.assert_approx_equal(generator._feature_shape_object_form_factor, 0.0)
@@ -404,53 +404,53 @@ class TestGenerator:
     def test__feature_shape_object_solidity(self, generator):
         numpy.testing.assert_approx_equal(generator._feature_shape_object_solidity, 0.0)
 
-    def test__feature_shape_object_spatial_moment_0_0_0(self, generator):
-        numpy.testing.assert_approx_equal(generator._feature_shape_object_spatial_moment_0_0_0, 0.0)
-
-    def test__feature_shape_object_spatial_moment_0_0_1(self, generator):
-        numpy.testing.assert_approx_equal(generator._feature_shape_object_spatial_moment_0_0_1, 0.0)
-
-    def test__feature_shape_object_spatial_moment_0_1_2(self, generator):
-        numpy.testing.assert_approx_equal(generator._feature_shape_object_spatial_moment_0_1_2, 0.0)
-
-    def test__feature_shape_object_spatial_moment_0_1_3(self, generator):
-        numpy.testing.assert_approx_equal(generator._feature_shape_object_spatial_moment_0_1_3, 0.0)
-
-    def test__feature_shape_object_spatial_moment_1_2_0(self, generator):
-        numpy.testing.assert_approx_equal(generator._feature_shape_object_spatial_moment_1_2_0, 0.0)
-
-    def test__feature_shape_object_spatial_moment_1_2_1(self, generator):
-        numpy.testing.assert_approx_equal(generator._feature_shape_object_spatial_moment_1_2_1, 0.0)
-
-    def test__feature_shape_object_spatial_moment_1_3_2(self, generator):
-        numpy.testing.assert_approx_equal(generator._feature_shape_object_spatial_moment_1_3_2, 0.0)
-
-    def test__feature_shape_object_spatial_moment_1_3_3(self, generator):
-        numpy.testing.assert_approx_equal(generator._feature_shape_object_spatial_moment_1_3_3, 0.0)
-
-    def test__feature_shape_object_spatial_moment_2_0_0(self, generator):
-        numpy.testing.assert_approx_equal(generator._feature_shape_object_spatial_moment_2_0_0, 0.0)
-
-    def test__feature_shape_object_spatial_moment_2_0_1(self, generator):
-        numpy.testing.assert_approx_equal(generator._feature_shape_object_spatial_moment_2_0_1, 0.0)
-
-    def test__feature_shape_object_spatial_moment_2_1_2(self, generator):
-        numpy.testing.assert_approx_equal(generator._feature_shape_object_spatial_moment_2_1_2, 0.0)
-
-    def test__feature_shape_object_spatial_moment_2_1_3(self, generator):
-        numpy.testing.assert_approx_equal(generator._feature_shape_object_spatial_moment_2_1_3, 0.0)
-
-    def test__feature_shape_object_spatial_moment_3_2_0(self, generator):
-        numpy.testing.assert_approx_equal(generator._feature_shape_object_spatial_moment_3_2_0, 0.0)
-
-    def test__feature_shape_object_spatial_moment_3_2_1(self, generator):
-        numpy.testing.assert_approx_equal(generator._feature_shape_object_spatial_moment_3_2_1, 0.0)
-
-    def test__feature_shape_object_spatial_moment_3_3_2(self, generator):
-        numpy.testing.assert_approx_equal(generator._feature_shape_object_spatial_moment_3_3_2, 0.0)
-
-    def test__feature_shape_object_spatial_moment_3_3_3(self, generator):
-        numpy.testing.assert_approx_equal(generator._feature_shape_object_spatial_moment_3_3_3, 0.0)
+    # def test__feature_shape_object_spatial_moment_0_0_0(self, generator):
+    #     numpy.testing.assert_approx_equal(generator._feature_shape_object_spatial_moment_0_0_0, 0.0)
+    #
+    # def test__feature_shape_object_spatial_moment_0_0_1(self, generator):
+    #     numpy.testing.assert_approx_equal(generator._feature_shape_object_spatial_moment_0_0_1, 0.0)
+    #
+    # def test__feature_shape_object_spatial_moment_0_1_2(self, generator):
+    #     numpy.testing.assert_approx_equal(generator._feature_shape_object_spatial_moment_0_1_2, 0.0)
+    #
+    # def test__feature_shape_object_spatial_moment_0_1_3(self, generator):
+    #     numpy.testing.assert_approx_equal(generator._feature_shape_object_spatial_moment_0_1_3, 0.0)
+    #
+    # def test__feature_shape_object_spatial_moment_1_2_0(self, generator):
+    #     numpy.testing.assert_approx_equal(generator._feature_shape_object_spatial_moment_1_2_0, 0.0)
+    #
+    # def test__feature_shape_object_spatial_moment_1_2_1(self, generator):
+    #     numpy.testing.assert_approx_equal(generator._feature_shape_object_spatial_moment_1_2_1, 0.0)
+    #
+    # def test__feature_shape_object_spatial_moment_1_3_2(self, generator):
+    #     numpy.testing.assert_approx_equal(generator._feature_shape_object_spatial_moment_1_3_2, 0.0)
+    #
+    # def test__feature_shape_object_spatial_moment_1_3_3(self, generator):
+    #     numpy.testing.assert_approx_equal(generator._feature_shape_object_spatial_moment_1_3_3, 0.0)
+    #
+    # def test__feature_shape_object_spatial_moment_2_0_0(self, generator):
+    #     numpy.testing.assert_approx_equal(generator._feature_shape_object_spatial_moment_2_0_0, 0.0)
+    #
+    # def test__feature_shape_object_spatial_moment_2_0_1(self, generator):
+    #     numpy.testing.assert_approx_equal(generator._feature_shape_object_spatial_moment_2_0_1, 0.0)
+    #
+    # def test__feature_shape_object_spatial_moment_2_1_2(self, generator):
+    #     numpy.testing.assert_approx_equal(generator._feature_shape_object_spatial_moment_2_1_2, 0.0)
+    #
+    # def test__feature_shape_object_spatial_moment_2_1_3(self, generator):
+    #     numpy.testing.assert_approx_equal(generator._feature_shape_object_spatial_moment_2_1_3, 0.0)
+    #
+    # def test__feature_shape_object_spatial_moment_3_2_0(self, generator):
+    #     numpy.testing.assert_approx_equal(generator._feature_shape_object_spatial_moment_3_2_0, 0.0)
+    #
+    # def test__feature_shape_object_spatial_moment_3_2_1(self, generator):
+    #     numpy.testing.assert_approx_equal(generator._feature_shape_object_spatial_moment_3_2_1, 0.0)
+    #
+    # def test__feature_shape_object_spatial_moment_3_3_2(self, generator):
+    #     numpy.testing.assert_approx_equal(generator._feature_shape_object_spatial_moment_3_3_2, 0.0)
+    #
+    # def test__feature_shape_object_spatial_moment_3_3_3(self, generator):
+    #     numpy.testing.assert_approx_equal(generator._feature_shape_object_spatial_moment_3_3_3, 0.0)
 
     def test__feature_shape_object_surface_area(self, generator):
         numpy.testing.assert_approx_equal(generator._feature_shape_object_surface_area, 0.0)
