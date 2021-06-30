@@ -1,10 +1,9 @@
-import magicgui.widgets
 import napari.layers
 import napari.types
 import napari.utils.events
 import napari_plugin_engine
-import qtpy.QtWidgets
 
+from ._dock_widget import DockWidget
 from ._generator import Generator
 
 
@@ -24,15 +23,7 @@ def features(viewer: napari.Viewer):
         if isinstance(source, napari.layers.Labels):
             generator.objects[source.source] = source.data
 
-    dock_widget = qtpy.QtWidgets.QWidget()
-
-    dock_widget.setWindowTitle("Features")
-
-    table = magicgui.widgets.Table([[0.0] * 16, [0.0] * 16])
-
-    dock_widget.setLayout(qtpy.QtWidgets.QGridLayout())
-
-    dock_widget.layout().addWidget(table.native)
+    dock_widget = DockWidget()
 
     viewer.window.add_dock_widget(dock_widget, area="bottom")
 
