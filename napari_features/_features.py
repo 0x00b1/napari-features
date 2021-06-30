@@ -33,6 +33,8 @@ def features(viewer: napari.Viewer):
         if event.type != "inserted":
             return
 
+        print(event.source)
+
         event_source = event.source[0]
 
         if isinstance(event_source, napari.layers.Image):
@@ -48,7 +50,10 @@ def features(viewer: napari.Viewer):
         event_source = event.source[0]
 
         if isinstance(event_source, napari.layers.Image):
-            data.drop(id(event_source), inplace=True)
+            try:
+                data.drop(id(event_source), inplace=True)
+            except KeyError:
+                pass
 
         dock_widget.table.value = data
 
