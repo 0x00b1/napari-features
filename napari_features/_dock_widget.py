@@ -8,7 +8,7 @@ import qtpy.QtCore
 class DockWidget(qtpy.QtWidgets.QWidget):
     def __init__(
         self,
-        flags: typing.Union[qtpy.QtCore.Qt.WindowFlags, qtpy.QtCore.Qt.WindowType] = qtpy.QtCore.Qt.WindowFlags()
+        flags: typing.Union[qtpy.QtCore.Qt.WindowFlags, qtpy.QtCore.Qt.WindowType] = qtpy.QtCore.Qt.WindowFlags(),
     ):
         super(DockWidget, self).__init__(flags=flags)
 

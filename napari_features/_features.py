@@ -2,13 +2,15 @@ import napari.layers
 import napari.types
 import napari.utils.events
 import napari_plugin_engine
+import pandas
 
 from ._dock_widget import DockWidget
-from ._generator import Generator
 
 
 def features(viewer: napari.Viewer):
-    generator = Generator()
+    data = pandas.DataFrame(columns=["image", "masks"])
+
+    dock_widget = DockWidget()
 
     @viewer.layers.events.connect
     def generate(event: napari.utils.events.event.Event):
@@ -18,12 +20,12 @@ def features(viewer: napari.Viewer):
         source = event.source[0]
 
         if isinstance(source, napari.layers.Image):
-            generator.images[source.source] = source.data
+            data.loc[len(data.index)] = ["image.png", "masks.png"]
 
         if isinstance(source, napari.layers.Labels):
-            generator.objects[source.source] = source.data
+            data.loc[len(data.index)] = ["image.png", "masks.png"]
 
-    dock_widget = DockWidget()
+        dock_widget.table.value = data
 
     viewer.window.add_dock_widget(dock_widget, area="bottom")
 
