@@ -5,6 +5,7 @@ import napari_plugin_engine
 import pandas
 
 from ._dock_widget import DockWidget
+from ._generate import generate
 
 COLUMNS = [
     "name",
@@ -23,7 +24,7 @@ def features(viewer: napari.Viewer):
 
     for layer in viewer.layers:
         if isinstance(layer, napari.layers.Image):
-            data.loc[layer.name] = [layer.source.path]
+            data.loc[layer.name] = generate(layer)
 
             dock_widget.table.value = data
 
@@ -35,7 +36,7 @@ def features(viewer: napari.Viewer):
         event_source = event.source[-1]
 
         if isinstance(event_source, napari.layers.Image):
-            data.loc[event_source.name] = [event_source.source.path]
+            data.loc[event_source.name] = generate(event_source)
 
             dock_widget.table.value = data
 
