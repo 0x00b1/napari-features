@@ -22,14 +22,21 @@ def features(viewer: napari.Viewer):
 
     data.set_index("id", inplace=True)
 
+    for layer in viewer.layers:
+        if isinstance(layer, napari.layers.Image):
+            data.loc[id(layer)] = [layer.name, layer.source.path]
+
+    dock_widget.table.value = data
+
     @viewer.layers.events.connect
     def insert(event: napari.utils.events.event.Event):
         if event.type != "inserted":
             return
 
-        for layer in viewer.layers:
-            if isinstance(layer, napari.layers.Image):
-                data.loc[id(layer)] = [layer.name, layer.source.path]
+        event_source = event.source[0]
+
+        if isinstance(event_source, napari.layers.Image):
+            data.loc[id(event_source)] = [event_source.name, event_source.source.path]
 
         dock_widget.table.value = data
 
@@ -38,10 +45,10 @@ def features(viewer: napari.Viewer):
         if event.type != "removing":
             return
 
-        source = event.source[0]
+        event_source = event.source[0]
 
-        if isinstance(source, napari.layers.Image):
-            data.drop(id(source), inplace=True)
+        if isinstance(event_source, napari.layers.Image):
+            data.drop(id(event_source), inplace=True)
 
         dock_widget.table.value = data
 
