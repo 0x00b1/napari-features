@@ -14,7 +14,7 @@ class DockWidget(qtpy.QtWidgets.QWidget):
 
         self.setWindowTitle("Features")
 
-        self.table = magicgui.widgets.Table([[0.0] * 16, [0.0] * 16])
+        self.table = magicgui.widgets.Table()
 
         self.setLayout(qtpy.QtWidgets.QGridLayout())
 
