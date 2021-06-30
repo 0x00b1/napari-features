@@ -26,36 +26,34 @@ def features(viewer: napari.Viewer):
         if isinstance(layer, napari.layers.Image):
             data.loc[id(layer)] = [layer.name, layer.source.path]
 
-    dock_widget.table.value = data
+            dock_widget.table.value = data
 
     @viewer.layers.events.connect
     def insert(event: napari.utils.events.event.Event):
         if event.type != "inserted":
             return
 
-        print(event.source)
-
-        event_source = event.source[0]
+        event_source = event.source[-1]
 
         if isinstance(event_source, napari.layers.Image):
             data.loc[id(event_source)] = [event_source.name, event_source.source.path]
 
-        dock_widget.table.value = data
+            dock_widget.table.value = data
 
     @viewer.layers.events.connect
     def remove(event: napari.utils.events.event.Event):
         if event.type != "removing":
             return
 
-        event_source = event.source[0]
+        event_source = event.source[-1]
 
         if isinstance(event_source, napari.layers.Image):
             try:
                 data.drop(id(event_source), inplace=True)
+
+                dock_widget.table.value = data
             except KeyError:
                 pass
-
-        dock_widget.table.value = data
 
 
 @napari_plugin_engine.napari_hook_implementation
