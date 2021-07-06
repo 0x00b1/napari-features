@@ -13,7 +13,11 @@ COLUMNS = [
 ]
 
 
-def features(viewer: napari.Viewer):
+def features(
+    image: napari.layers.Image,
+    masks: napari.layers.Labels,
+    viewer: napari.Viewer
+):
     dock_widget = DockWidget()
 
     viewer.window.add_dock_widget(dock_widget, area="bottom")
