@@ -75,7 +75,11 @@ class Generator(collections.abc.Iterator):
 
     @property
     def central_moments(self):
-        return skimage.measure.moments_central(self.masks.astype(numpy.uint8), self.local_centroid, order=3)
+        v = numpy.zeros((4, 4, 4))
+
+        v[0] = skimage.measure.moments_central(skimage.img_as_ubyte(self.masked), order=3)
+
+        return v
 
     @property
     def centroid(self):
@@ -122,8 +126,7 @@ class Generator(collections.abc.Iterator):
     def local_centroid(self):
         spatial_moments = self.spatial_moments
 
-        return tuple(
-            spatial_moments[tuple(numpy.eye(self.masks.ndim, dtype=int))] / spatial_moments[(0,) * self.masks.ndim])
+        return tuple(spatial_moments[tuple(numpy.eye(self.masks.ndim, dtype=int))] / spatial_moments[(0,) * self.masks.ndim])
 
     @property
     def mask(self):
@@ -135,16 +138,11 @@ class Generator(collections.abc.Iterator):
 
     @property
     def spatial_moments(self):
-        m = skimage.measure.moments(skimage.img_as_ubyte(self.masked), 3)
+        v = numpy.zeros((4, 4, 4))
 
-        if not self.volumetric:
-            v = numpy.zeros((4, 4, 4))
+        v[0] = skimage.measure.moments(skimage.img_as_ubyte(self.masked), order=3)
 
-            v[0] = m
-
-            return v
-
-        return m
+        return v
 
     # General-purpose features
 
@@ -421,67 +419,259 @@ class Generator(collections.abc.Iterator):
 
     @property
     def _feature_shape_object_central_moment_0_0_0(self):
-        return numpy.nan
+        return self.central_moments[0, 0, 0]
 
     @property
     def _feature_shape_object_central_moment_0_0_1(self):
-        return numpy.nan
+        return self.central_moments[0, 0, 1]
+
+    @property
+    def _feature_shape_object_central_moment_0_0_2(self):
+        return self.central_moments[0, 0, 2]
+
+    @property
+    def _feature_shape_object_central_moment_0_0_3(self):
+        return self.central_moments[0, 0, 3]
+
+    @property
+    def _feature_shape_object_central_moment_0_1_0(self):
+        return self.central_moments[0, 1, 0]
+
+    @property
+    def _feature_shape_object_central_moment_0_1_1(self):
+        return self.central_moments[0, 1, 1]
 
     @property
     def _feature_shape_object_central_moment_0_1_2(self):
-        return numpy.nan
+        return self.central_moments[0, 1, 2]
 
     @property
     def _feature_shape_object_central_moment_0_1_3(self):
-        return numpy.nan
+        return self.central_moments[0, 1, 3]
+
+    @property
+    def _feature_shape_object_central_moment_0_2_0(self):
+        return self.central_moments[0, 2, 0]
+
+    @property
+    def _feature_shape_object_central_moment_0_2_1(self):
+        return self.central_moments[0, 2, 1]
+
+    @property
+    def _feature_shape_object_central_moment_0_2_2(self):
+        return self.central_moments[0, 2, 2]
+
+    @property
+    def _feature_shape_object_central_moment_0_2_3(self):
+        return self.central_moments[0, 2, 3]
+
+    @property
+    def _feature_shape_object_central_moment_0_3_0(self):
+        return self.central_moments[0, 3, 0]
+
+    @property
+    def _feature_shape_object_central_moment_0_3_1(self):
+        return self.central_moments[0, 3, 1]
+
+    @property
+    def _feature_shape_object_central_moment_0_3_2(self):
+        return self.central_moments[0, 3, 2]
+
+    @property
+    def _feature_shape_object_central_moment_0_3_3(self):
+        return self.central_moments[0, 3, 3]
+
+    @property
+    def _feature_shape_object_central_moment_1_0_0(self):
+        return self.central_moments[1, 0, 0]
+
+    @property
+    def _feature_shape_object_central_moment_1_0_1(self):
+        return self.central_moments[1, 0, 1]
+
+    @property
+    def _feature_shape_object_central_moment_1_0_2(self):
+        return self.central_moments[1, 0, 2]
+
+    @property
+    def _feature_shape_object_central_moment_1_0_3(self):
+        return self.central_moments[1, 0, 3]
+
+    @property
+    def _feature_shape_object_central_moment_1_1_0(self):
+        return self.central_moments[1, 1, 0]
+
+    @property
+    def _feature_shape_object_central_moment_1_1_1(self):
+        return self.central_moments[1, 1, 1]
+
+    @property
+    def _feature_shape_object_central_moment_1_1_2(self):
+        return self.central_moments[1, 1, 2]
+
+    @property
+    def _feature_shape_object_central_moment_1_1_3(self):
+        return self.central_moments[1, 1, 3]
 
     @property
     def _feature_shape_object_central_moment_1_2_0(self):
-        return numpy.nan
+        return self.central_moments[1, 2, 0]
 
     @property
     def _feature_shape_object_central_moment_1_2_1(self):
-        return numpy.nan
+        return self.central_moments[1, 2, 1]
+
+    @property
+    def _feature_shape_object_central_moment_1_2_2(self):
+        return self.central_moments[1, 2, 2]
+
+    @property
+    def _feature_shape_object_central_moment_1_2_3(self):
+        return self.central_moments[1, 2, 3]
+
+    @property
+    def _feature_shape_object_central_moment_1_3_0(self):
+        return self.central_moments[1, 3, 0]
+
+    @property
+    def _feature_shape_object_central_moment_1_3_1(self):
+        return self.central_moments[1, 3, 1]
 
     @property
     def _feature_shape_object_central_moment_1_3_2(self):
-        return numpy.nan
+        return self.central_moments[1, 3, 2]
 
     @property
     def _feature_shape_object_central_moment_1_3_3(self):
-        return numpy.nan
+        return self.central_moments[1, 3, 3]
 
     @property
     def _feature_shape_object_central_moment_2_0_0(self):
-        return numpy.nan
+        return self.central_moments[2, 0, 0]
 
     @property
     def _feature_shape_object_central_moment_2_0_1(self):
-        return numpy.nan
+        return self.central_moments[2, 0, 1]
+
+    @property
+    def _feature_shape_object_central_moment_2_0_2(self):
+        return self.central_moments[2, 0, 2]
+
+    @property
+    def _feature_shape_object_central_moment_2_0_3(self):
+        return self.central_moments[2, 0, 3]
+
+    @property
+    def _feature_shape_object_central_moment_2_1_0(self):
+        return self.central_moments[2, 1, 0]
+
+    @property
+    def _feature_shape_object_central_moment_2_1_1(self):
+        return self.central_moments[2, 1, 1]
 
     @property
     def _feature_shape_object_central_moment_2_1_2(self):
-        return numpy.nan
+        return self.central_moments[2, 1, 2]
 
     @property
     def _feature_shape_object_central_moment_2_1_3(self):
-        return numpy.nan
+        return self.central_moments[2, 1, 3]
+
+    @property
+    def _feature_shape_object_central_moment_2_2_0(self):
+        return self.central_moments[2, 2, 0]
+
+    @property
+    def _feature_shape_object_central_moment_2_2_1(self):
+        return self.central_moments[2, 2, 1]
+
+    @property
+    def _feature_shape_object_central_moment_2_2_2(self):
+        return self.central_moments[2, 2, 2]
+
+    @property
+    def _feature_shape_object_central_moment_2_2_3(self):
+        return self.central_moments[2, 2, 3]
+
+    @property
+    def _feature_shape_object_central_moment_2_3_0(self):
+        return self.central_moments[2, 3, 0]
+
+    @property
+    def _feature_shape_object_central_moment_2_3_1(self):
+        return self.central_moments[2, 3, 1]
+
+    @property
+    def _feature_shape_object_central_moment_2_3_2(self):
+        return self.central_moments[2, 3, 2]
+
+    @property
+    def _feature_shape_object_central_moment_2_3_3(self):
+        return self.central_moments[2, 3, 3]
+
+    @property
+    def _feature_shape_object_central_moment_3_0_0(self):
+        return self.central_moments[3, 0, 0]
+
+    @property
+    def _feature_shape_object_central_moment_3_0_1(self):
+        return self.central_moments[3, 0, 1]
+
+    @property
+    def _feature_shape_object_central_moment_3_0_2(self):
+        return self.central_moments[3, 0, 2]
+
+    @property
+    def _feature_shape_object_central_moment_3_0_3(self):
+        return self.central_moments[3, 0, 3]
+
+    @property
+    def _feature_shape_object_central_moment_3_1_0(self):
+        return self.central_moments[3, 1, 0]
+
+    @property
+    def _feature_shape_object_central_moment_3_1_1(self):
+        return self.central_moments[3, 1, 1]
+
+    @property
+    def _feature_shape_object_central_moment_3_1_2(self):
+        return self.central_moments[3, 1, 2]
+
+    @property
+    def _feature_shape_object_central_moment_3_1_3(self):
+        return self.central_moments[3, 1, 3]
 
     @property
     def _feature_shape_object_central_moment_3_2_0(self):
-        return numpy.nan
+        return self.central_moments[3, 2, 0]
 
     @property
     def _feature_shape_object_central_moment_3_2_1(self):
-        return numpy.nan
+        return self.central_moments[3, 2, 1]
+
+    @property
+    def _feature_shape_object_central_moment_3_2_2(self):
+        return self.central_moments[3, 2, 2]
+
+    @property
+    def _feature_shape_object_central_moment_3_2_3(self):
+        return self.central_moments[3, 2, 3]
+
+    @property
+    def _feature_shape_object_central_moment_3_3_0(self):
+        return self.central_moments[3, 3, 0]
+
+    @property
+    def _feature_shape_object_central_moment_3_3_1(self):
+        return self.central_moments[3, 3, 1]
 
     @property
     def _feature_shape_object_central_moment_3_3_2(self):
-        return numpy.nan
+        return self.central_moments[3, 3, 2]
 
     @property
     def _feature_shape_object_central_moment_3_3_3(self):
-        return numpy.nan
+        return self.central_moments[3, 3, 3]
 
     @property
     def _feature_shape_object_centroid_x(self):
