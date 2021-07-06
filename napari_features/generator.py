@@ -6,6 +6,7 @@ import math
 import numpy
 import scipy.ndimage
 import scipy.stats
+import skimage.color
 import skimage.measure
 import skimage.morphology
 import skimage.segmentation
@@ -26,16 +27,24 @@ def cache(wrapped):
 
 
 class Generator(collections.abc.Iterator):
-    def __init__(self, label, image):
+    def __init__(self, masks, image):
         self.cache = {}
+
+        if masks.shape[-1] == 4:
+            masks = masks[:, :, 0]
+
+        if image.shape[-1] == 4:
+            image = image[:, :, :-1]
+
+            image = skimage.color.rgb2gray(image)
 
         self.image = skimage.img_as_float32(image)
 
-        self.label = label
+        self.masks = masks
 
-        self.multichannel = label.shape < image.shape
+        self.multichannel = masks.shape < image.shape
 
-        self.objects = scipy.ndimage.find_objects(label)
+        self.objects = scipy.ndimage.find_objects(masks)
 
         self.object_index = 1  # skip background (`0`)
 
@@ -45,7 +54,7 @@ class Generator(collections.abc.Iterator):
 
         self._cropped = None
 
-        self._spatial_axes = tuple(range(label.ndim))
+        self._spatial_axes = tuple(range(masks.ndim))
 
     def __iter__(self):
         return self
@@ -61,17 +70,14 @@ class Generator(collections.abc.Iterator):
         return [getattr(self, member) for member in self._members]
 
     @property
-    @cache
     def area(self):
-        return numpy.sum(self.label)
+        return numpy.sum(self.masks)
 
     @property
-    @cache
     def central_moments(self):
-        return skimage.measure.moments_central(self.label.astype(numpy.uint8), self.local_centroid, order=3)
+        return skimage.measure.moments_central(self.masks.astype(numpy.uint8), self.local_centroid, order=3)
 
     @property
-    @cache
     def centroid(self):
         return self.coordinates.mean(axis=0)
 
@@ -80,63 +86,54 @@ class Generator(collections.abc.Iterator):
         return [member.replace("_feature_", "") for member in self._members]
 
     @property
-    @cache
     def convex_hull(self):
         return skimage.morphology.convex_hull_image(self.mask)
 
     @property
-    @cache
     def coordinates(self):
         indices = numpy.nonzero(self.image)
 
         stack = []
 
-        for index in range(self.label.ndim):
+        for index in range(self.masks.ndim):
             stack += [indices[index] + self.object[index].start]
 
         return numpy.vstack(stack).T
 
     @property
-    @cache
     def crop(self):
         return self.image[self.object]
 
     @property
-    @cache
     def edge(self):
         boundary = skimage.segmentation.find_boundaries(self.mask, mode="outer")
 
         return self.crop * boundary
 
     @property
-    @cache
     def inertia_tensor(self):
         return skimage.measure.inertia_tensor(self.image, self.central_moments)
 
     @property
-    @cache
     def inertia_tensor_eigenvalues(self):
-        return skimage.measure.inertia_tensor_eigvals(self.label, T=self.inertia_tensor)
+        return skimage.measure.inertia_tensor_eigvals(self.masks, T=self.inertia_tensor)
 
     @property
-    @cache
     def local_centroid(self):
         spatial_moments = self.spatial_moments
 
-        return tuple(spatial_moments[tuple(numpy.eye(self.label.ndim, dtype=int))] / spatial_moments[(0,) * self.label.ndim])
+        return tuple(
+            spatial_moments[tuple(numpy.eye(self.masks.ndim, dtype=int))] / spatial_moments[(0,) * self.masks.ndim])
 
     @property
-    @cache
     def mask(self):
-        return numpy.squeeze(self.label[self.object]) > 0
+        return numpy.squeeze(self.masks[self.object]) > 0
 
     @property
-    @cache
     def masked(self):
         return self.image[self.object] * self.mask
 
     @property
-    @cache
     def spatial_moments(self):
         m = skimage.measure.moments(skimage.img_as_ubyte(self.masked), 3)
 
@@ -242,7 +239,6 @@ class Generator(collections.abc.Iterator):
         return 0.0
 
     @property
-    @cache
     def _feature_color_object_maximum_intensity(self):
         return numpy.max(self.masked)
 
@@ -509,15 +505,15 @@ class Generator(collections.abc.Iterator):
 
     @property
     def _feature_shape_object_equivalent_diameter(self):
-        return (2 * self.label.ndim * self.area / math.pi) ** (1 / self.label.ndim)
+        return (2 * self.masks.ndim * self.area / math.pi) ** (1 / self.masks.ndim)
 
     @property
     def _feature_shape_object_euler_number(self):
-        return skimage.measure.euler_number(self.label, self.label.ndim)
+        return skimage.measure.euler_number(self.masks, self.masks.ndim)
 
     @property
     def _feature_shape_object_extent(self):
-        return self.area / self.label.size
+        return self.area / self.masks.size
 
     @property
     def _feature_shape_object_form_factor(self):

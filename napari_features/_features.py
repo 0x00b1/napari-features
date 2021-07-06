@@ -1,63 +1,26 @@
 import napari.layers
-import napari.types
 import napari.utils.events
 import napari_plugin_engine
 import pandas
 
 from ._dock_widget import DockWidget
-from ._generate import generate
-
-COLUMNS = [
-    "name",
-    "path",
-]
+from .generator import Generator
 
 
 def features(
-    image: napari.layers.Image,
-    masks: napari.layers.Labels,
-    viewer: napari.Viewer
+        image: napari.layers.Image,
+        masks: napari.layers.Labels,
+        viewer: napari.Viewer
 ):
     dock_widget = DockWidget()
 
     viewer.window.add_dock_widget(dock_widget, area="bottom")
 
-    data = pandas.DataFrame(columns=COLUMNS)
+    generator = Generator(masks.data, image.data)
 
-    data.set_index("name", inplace=True)
+    data = pandas.DataFrame([feature for feature in generator], columns=generator.columns)
 
-    for layer in viewer.layers:
-        if isinstance(layer, napari.layers.Image):
-            data.loc[layer.name] = generate(layer)
-
-            dock_widget.table.value = data
-
-    @viewer.layers.events.connect
-    def insert(event: napari.utils.events.event.Event):
-        if event.type != "inserted":
-            return
-
-        event_source = event.source[-1]
-
-        if isinstance(event_source, napari.layers.Image):
-            data.loc[event_source.name] = generate(event_source)
-
-            dock_widget.table.value = data
-
-    @viewer.layers.events.connect
-    def remove(event: napari.utils.events.event.Event):
-        if event.type != "removing":
-            return
-
-        event_source = event.source[-1]
-
-        if isinstance(event_source, napari.layers.Image):
-            try:
-                data.drop(event_source.name, inplace=True)
-
-                dock_widget.table.value = data
-            except KeyError:
-                pass
+    dock_widget.table.value = data
 
 
 @napari_plugin_engine.napari_hook_implementation
