@@ -1,6 +1,6 @@
 import functools
 
-from ._generator import Generator
+from .generator import Generator
 
 
 def cache(wrapped):
