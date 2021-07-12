@@ -42,6 +42,8 @@ class Generator(collections.abc.Iterator):
 
         self.masks = masks
 
+        self.index = 0
+
         self.multichannel = masks.shape < image.shape
 
         self.objects = scipy.ndimage.find_objects(masks)
@@ -61,17 +63,23 @@ class Generator(collections.abc.Iterator):
 
     def __next__(self):
         try:
-            self.object = self.objects[self.object_index - 1]
+            self.object = self.objects[self.index]
         except IndexError:
             raise StopIteration
 
-        self.object_index = self.object_index + 1
+        features = [getattr(self, member) for member in self._members]
 
-        return [getattr(self, member) for member in self._members]
+        self.index += 1
+
+        return features
 
     @property
     def area(self):
         return numpy.sum(self.masks)
+
+    @property
+    def bounding_box(self):
+        return self.regionprops.bbox
 
     @property
     def central_moments(self):
@@ -137,6 +145,14 @@ class Generator(collections.abc.Iterator):
         return self.image[self.object] * self.mask
 
     @property
+    def perimeter(self):
+        return self.regionprops.perimeter
+
+    @property
+    def regionprops(self):
+        return skimage.measure.regionprops(self.masks, self.image)[self.index]
+
+    @property
     def spatial_moments(self):
         v = numpy.zeros((4, 4, 4))
 
@@ -164,7 +180,7 @@ class Generator(collections.abc.Iterator):
 
     @property
     def _feature_color_image_median_absolute_deviation_intensity(self):
-        return scipy.stats.median_absolute_deviation(self.image.reshape(-1, ))
+        return scipy.stats.median_abs_deviation(self.image.reshape(-1, ))
 
     @property
     def _feature_color_image_median_intensity(self):
@@ -260,7 +276,7 @@ class Generator(collections.abc.Iterator):
 
     @property
     def _feature_color_object_median_absolute_deviation_intensity(self):
-        return scipy.stats.median_absolute_deviation(self.masked.reshape(-1, ))
+        return scipy.stats.median_abs_deviation(self.masked.reshape(-1, ))
 
     @property
     def _feature_color_object_median_intensity(self):
@@ -334,7 +350,7 @@ class Generator(collections.abc.Iterator):
     def _feature_metadata_image_filename(self):
         return numpy.nan
 
-    # Metadata: Layer
+    # Metadata: Napari Layer
 
     @property
     def _feature_metadata_layer_name(self):
@@ -383,19 +399,19 @@ class Generator(collections.abc.Iterator):
 
     @property
     def _feature_shape_object_area(self):
-        return numpy.nan
+        return self.regionprops.area
 
     @property
     def _feature_shape_object_bounding_box_area(self):
-        return numpy.nan
+        return self.regionprops.bbox_area
 
     @property
     def _feature_shape_object_bounding_box_maximum_x(self):
-        return numpy.nan
+        return self.bounding_box[2]
 
     @property
     def _feature_shape_object_bounding_box_maximum_y(self):
-        return numpy.nan
+        return self.bounding_box[3]
 
     @property
     def _feature_shape_object_bounding_box_maximum_z(self):
@@ -403,18 +419,14 @@ class Generator(collections.abc.Iterator):
 
     @property
     def _feature_shape_object_bounding_box_minimum_x(self):
-        return numpy.nan
+        return self.bounding_box[0]
 
     @property
     def _feature_shape_object_bounding_box_minimum_y(self):
-        return numpy.nan
+        return self.bounding_box[1]
 
     @property
     def _feature_shape_object_bounding_box_minimum_z(self):
-        return numpy.nan
-
-    @property
-    def _feature_shape_object_bounding_box_volume(self):
         return numpy.nan
 
     @property
@@ -687,11 +699,30 @@ class Generator(collections.abc.Iterator):
 
     @property
     def _feature_shape_object_compactness(self):
-        return numpy.nan
+        """
+        The ratio of the area of the object to the area of a circle with the same perimeter:
+
+            $compactness=\frac{4\pi}{perimeter^{2}}$
+        """
+        return (4 * numpy.pi * self.area) / numpy.square(self.perimeter)
 
     @property
     def _feature_shape_object_eccentricity(self):
+        """
+        The ratio of the minor axis length to the major axis length of an object:
+
+            $eccentricity=\frac{minor\;axis_{\;length}}{major\;axis_{\;length}}$
+        """
         return numpy.nan
+
+    @property
+    def _feature_shape_object_elongation(self):
+        """
+        The ratio between the height and width of the object's bounding box:
+
+            $elongation=\frac{bounding\;box_{\;width}}{bounding\;box_{\;height}}$
+        """
+        return (self.bounding_box[3] - self.bounding_box[1]) / (self.bounding_box[2] - self.bounding_box[0])
 
     @property
     def _feature_shape_object_equivalent_diameter(self):
@@ -707,43 +738,43 @@ class Generator(collections.abc.Iterator):
 
     @property
     def _feature_shape_object_form_factor(self):
-        return numpy.nan
+        return self.regionprops.moments_hu[0]
 
     @property
     def _feature_shape_object_hu_moment_0(self):
-        return numpy.nan
+        return self.regionprops.moments_hu[0]
 
     @property
     def _feature_shape_object_hu_moment_1(self):
-        return numpy.nan
+        return self.regionprops.moments_hu[1]
 
     @property
     def _feature_shape_object_hu_moment_2(self):
-        return numpy.nan
+        return self.regionprops.moments_hu[2]
 
     @property
     def _feature_shape_object_hu_moment_3(self):
-        return numpy.nan
+        return self.regionprops.moments_hu[3]
 
     @property
     def _feature_shape_object_hu_moment_4(self):
-        return numpy.nan
+        return self.regionprops.moments_hu[4]
 
     @property
     def _feature_shape_object_hu_moment_5(self):
-        return numpy.nan
+        return self.regionprops.moments_hu[5]
 
     @property
     def _feature_shape_object_hu_moment_6(self):
-        return numpy.nan
+        return self.regionprops.moments_hu[6]
 
     @property
     def _feature_shape_object_inertia_tensor_eigenvalues_x(self):
-        return numpy.nan
+        return self.regionprops.inertia_tensor_eigvals[0]
 
     @property
     def _feature_shape_object_inertia_tensor_eigenvalues_y(self):
-        return numpy.nan
+        return self.regionprops.inertia_tensor_eigvals[1]
 
     @property
     def _feature_shape_object_inertia_tensor_eigenvalues_z(self):
@@ -787,7 +818,7 @@ class Generator(collections.abc.Iterator):
 
     @property
     def _feature_shape_object_major_axis_length(self):
-        return numpy.nan
+        return self.regionprops.major_axis_length
 
     @property
     def _feature_shape_object_maximum_feret_diameter(self):
@@ -811,7 +842,7 @@ class Generator(collections.abc.Iterator):
 
     @property
     def _feature_shape_object_minor_axis_length(self):
-        return numpy.nan
+        return self.regionprops.minor_axis_length
 
     @property
     def _feature_shape_object_normalized_moment_x_y(self):
@@ -819,11 +850,11 @@ class Generator(collections.abc.Iterator):
 
     @property
     def _feature_shape_object_orientation(self):
-        return numpy.nan
+        return self.regionprops.orientation
 
     @property
     def _feature_shape_object_perimeter(self):
-        return numpy.nan
+        return self.perimeter
 
     @property
     def _feature_shape_object_solidity(self):
