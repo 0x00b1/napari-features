@@ -14,9 +14,9 @@ class DockWidget(qtpy.QtWidgets.QWidget):
 
         self.setWindowTitle("Features")
 
-        grid_layer = qtpy.QtWidgets.QGridLayout()
+        grid_layout = qtpy.QtWidgets.QGridLayout()
 
-        self.setLayout(grid_layer)
+        self.setLayout(grid_layout)
 
         self.copy_button = qtpy.QtWidgets.QPushButton("Copy to clipboard")
 
