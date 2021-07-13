@@ -713,7 +713,7 @@ class Generator(collections.abc.Iterator):
 
             $eccentricity=\frac{minor\;axis_{\;length}}{major\;axis_{\;length}}$
         """
-        return numpy.nan
+        return self.regionprops.minor_axis_length / self.regionprops.major_axis_length
 
     @property
     def _feature_shape_object_elongation(self):
@@ -738,7 +738,7 @@ class Generator(collections.abc.Iterator):
 
     @property
     def _feature_shape_object_form_factor(self):
-        return self.regionprops.moments_hu[0]
+        return numpy.nan
 
     @property
     def _feature_shape_object_hu_moment_0(self):
