@@ -13,19 +13,6 @@ import skimage.segmentation
 import skimage.measure
 
 
-def cache(wrapped):
-    @functools.wraps(wrapped)
-    def function(generator: "Generator"):
-        name = wrapped.__name__
-
-        if not (name in generator.cache):
-            generator.cache[name] = wrapped(generator)
-
-        return generator.cache[name]
-
-    return function
-
-
 class Generator(collections.abc.Iterator):
     def __init__(self, masks, image):
         self.cache = {}
