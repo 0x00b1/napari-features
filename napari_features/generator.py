@@ -1,5 +1,4 @@
 import collections.abc
-import functools
 import inspect
 import math
 
@@ -8,9 +7,9 @@ import scipy.ndimage
 import scipy.stats
 import skimage.color
 import skimage.measure
+import skimage.measure
 import skimage.morphology
 import skimage.segmentation
-import skimage.measure
 
 
 class Generator(collections.abc.Iterator):
