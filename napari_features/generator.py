@@ -127,7 +127,7 @@ class Generator(collections.abc.Iterator):
 
     @property
     def masked(self):
-        return self.image[self.object] * self.mask
+        return numpy.squeeze(self.image[self.object]) * self.mask
 
     @property
     def perimeter(self):
@@ -687,7 +687,7 @@ class Generator(collections.abc.Iterator):
         """
         The ratio of the area of the object to the area of a circle with the same perimeter:
 
-            $compactness=\frac{4\pi}{perimeter^{2}}$
+            $compactness=\frac{4\\pi}{perimeter^{2}}$
         """
         return (4 * numpy.pi * self.area) / numpy.square(self.perimeter)
 
@@ -696,7 +696,7 @@ class Generator(collections.abc.Iterator):
         """
         The ratio of the minor axis length to the major axis length of an object:
 
-            $eccentricity=\frac{minor\;axis_{\;length}}{major\;axis_{\;length}}$
+            $eccentricity=\frac{minor\\;axis_{\\;length}}{major\\;axis_{\\;length}}$
         """
         return self.regionprops.minor_axis_length / self.regionprops.major_axis_length
 
@@ -705,7 +705,7 @@ class Generator(collections.abc.Iterator):
         """
         The ratio between the height and width of the object's bounding box:
 
-            $elongation=\frac{bounding\;box_{\;width}}{bounding\;box_{\;height}}$
+            $elongation=\frac{bounding\\;box_{\\;width}}{bounding\\;box_{\\;height}}$
         """
         return (self.bounding_box[3] - self.bounding_box[1]) / (self.bounding_box[2] - self.bounding_box[0])
 

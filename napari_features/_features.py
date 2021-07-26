@@ -24,7 +24,9 @@ def features(
 
     data["_feature_metadata_layer_name"] = masks.name
 
-    dock_widget.table.value = data
+    masks.properties = data
+
+    dock_widget.table.value = masks.properties
 
 
 @napari_plugin_engine.napari_hook_implementation
