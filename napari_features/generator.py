@@ -7,7 +7,6 @@ import scipy.ndimage
 import scipy.stats
 import skimage.color
 import skimage.measure
-import skimage.measure
 import skimage.morphology
 import skimage.segmentation
 
