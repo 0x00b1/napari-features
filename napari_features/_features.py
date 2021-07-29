@@ -5,6 +5,7 @@ import pandas
 
 from ._dock_widget import DockWidget
 from .generator import Generator
+from ._feature_selection_widget import FeatureSelectionWidget
 
 
 def features(
@@ -15,6 +16,12 @@ def features(
     dock_widget = DockWidget()
 
     viewer.window.add_dock_widget(dock_widget, area="bottom")
+
+    viewer.window.add_dock_widget(dock_widget)
+
+    feature_selection_widget = FeatureSelectionWidget()
+
+    viewer.window.add_dock_widget(feature_selection_widget)
 
     generator = Generator(masks.data, image.data)
 
