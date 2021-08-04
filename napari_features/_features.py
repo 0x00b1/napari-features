@@ -31,7 +31,7 @@ def features(
 
     data["_feature_metadata_layer_name"] = masks.name
 
-    masks.properties = data
+    masks.properties["features"] = data.to_dict()
 
     dock_widget.table.value = masks.properties
 
