@@ -15,7 +15,7 @@ with open(resource_filename, "r") as fp:
 
 
 class FeatureSelectionWidget(qtpy.QtWidgets.QWidget):
-    features: typing.Set[str] = set()
+    selected: typing.Set[str] = set()
 
     def __init__(
             self,
@@ -69,7 +69,7 @@ class FeatureSelectionWidget(qtpy.QtWidgets.QWidget):
                     features = FEATURES[grandparent][parent][item.text(0)]
 
                     if item.checked:
-                        self.features = self.features.union(features)
+                        self.selected = self.selected.union(features)
                     else:
                         for feature in features:
-                            self.features.remove(feature)
+                            self.selected.remove(feature)

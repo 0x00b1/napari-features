@@ -23,7 +23,7 @@ def features(
 
     viewer.window.add_dock_widget(feature_selection_widget)
 
-    generator = Generator(masks.data, image.data)
+    generator = Generator(masks.data, image.data, feature_selection_widget.selected)
 
     data = pandas.DataFrame([feature for feature in generator], columns=generator.columns)
 
