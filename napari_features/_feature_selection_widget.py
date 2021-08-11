@@ -61,10 +61,19 @@ class FeatureSelectionWidget(qtpy.QtWidgets.QWidget):
             item.check_state = item.checkState(0)
 
             if item.checked:
-                grandparent = item.parent().parent().text(0)
+                if item.parent():
+                    parent = item.parent().text(0)
 
-                parent = item.parent().text(0)
+                    if item.parent().parent():
+                        grandparent = item.parent().parent().text(0)
 
-                self.features = self.features.union(FEATURES[grandparent][parent][item.text(0)])
+                        self.features = self.features.union(FEATURES[grandparent][parent][item.text(0)])
+            else:
+                if item.parent():
+                    parent = item.parent().text(0)
 
-                print(self.features)
+                    if item.parent().parent():
+                        grandparent = item.parent().parent().text(0)
+
+                        for feature in FEATURES[grandparent][parent][item.text(0)]:
+                            self.features.remove(feature)
