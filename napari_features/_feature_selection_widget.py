@@ -430,14 +430,18 @@ class FeatureSelectionWidget(qtpy.QtWidgets.QWidget):
     ):
         super(FeatureSelectionWidget, self).__init__(flags=flags)
 
+        features: typing.Set[str] = set()
+
         grid_layout = qtpy.QtWidgets.QGridLayout()
 
         self.setLayout(grid_layout)
 
-        tree_widget = qtpy.QtWidgets.QTreeWidget()
+        self.tree_widget = qtpy.QtWidgets.QTreeWidget()
 
+        self.tree_widget.itemClicked.connect(self.on_item_clicked)
+        
         for descriptor in FEATURES.keys():
-            parent = qtpy.QtWidgets.QTreeWidgetItem(tree_widget)
+            parent = qtpy.QtWidgets.QTreeWidgetItem(self.tree_widget)
 
             parent.setText(0, descriptor)
 
@@ -459,4 +463,10 @@ class FeatureSelectionWidget(qtpy.QtWidgets.QWidget):
 
                     grandchild.setCheckState(0, qtpy.QtCore.Qt.Unchecked)
 
-        self.layout().addWidget(tree_widget)
+        self.layout().addWidget(self.tree_widget)
+
+    def on_item_clicked(self):
+        item = self.tree_widget.currentItem()
+
+        print(item)
+
