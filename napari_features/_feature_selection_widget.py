@@ -60,20 +60,16 @@ class FeatureSelectionWidget(qtpy.QtWidgets.QWidget):
         if column == 0 and (item.check_state != item.checkState(0)):
             item.check_state = item.checkState(0)
 
-            if item.checked:
-                if item.parent():
-                    parent = item.parent().text(0)
+            if item.parent():
+                parent = item.parent().text(0)
 
-                    if item.parent().parent():
-                        grandparent = item.parent().parent().text(0)
+                if item.parent().parent():
+                    grandparent = item.parent().parent().text(0)
 
-                        self.features = self.features.union(FEATURES[grandparent][parent][item.text(0)])
-            else:
-                if item.parent():
-                    parent = item.parent().text(0)
+                    features = FEATURES[grandparent][parent][item.text(0)]
 
-                    if item.parent().parent():
-                        grandparent = item.parent().parent().text(0)
-
-                        for feature in FEATURES[grandparent][parent][item.text(0)]:
+                    if item.checked:
+                        self.features = self.features.union(features)
+                    else:
+                        for feature in features:
                             self.features.remove(feature)
