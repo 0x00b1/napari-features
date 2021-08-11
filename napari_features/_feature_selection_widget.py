@@ -3,6 +3,8 @@ import typing
 import qtpy.QtWidgets
 import qtpy.QtCore
 
+from napari_features._tree_widget_item import TreeWidgetItem
+
 FEATURES = {
     "Color": {
         "Image": {
@@ -424,13 +426,13 @@ FEATURES = {
 
 
 class FeatureSelectionWidget(qtpy.QtWidgets.QWidget):
+    features: typing.Set[str] = set()
+
     def __init__(
             self,
             flags: typing.Union[qtpy.QtCore.Qt.WindowFlags, qtpy.QtCore.Qt.WindowType] = qtpy.QtCore.Qt.WindowFlags(),
     ):
         super(FeatureSelectionWidget, self).__init__(flags=flags)
-
-        features: typing.Set[str] = set()
 
         grid_layout = qtpy.QtWidgets.QGridLayout()
 
@@ -438,24 +440,22 @@ class FeatureSelectionWidget(qtpy.QtWidgets.QWidget):
 
         self.tree_widget = qtpy.QtWidgets.QTreeWidget()
 
-        self.tree_widget.itemClicked.connect(self.on_item_clicked)
-        
         for descriptor in FEATURES.keys():
-            parent = qtpy.QtWidgets.QTreeWidgetItem(self.tree_widget)
+            parent = TreeWidgetItem(self.tree_widget)
 
             parent.setText(0, descriptor)
 
             parent.setFlags(parent.flags() | qtpy.QtCore.Qt.ItemIsTristate | qtpy.QtCore.Qt.ItemIsUserCheckable)
 
             for name in FEATURES[descriptor]:
-                child = qtpy.QtWidgets.QTreeWidgetItem(parent)
+                child = TreeWidgetItem(parent)
 
                 child.setText(0, name)
 
                 child.setFlags(child.flags() | qtpy.QtCore.Qt.ItemIsTristate | qtpy.QtCore.Qt.ItemIsUserCheckable)
 
                 for feature in FEATURES[descriptor][name].keys():
-                    grandchild = qtpy.QtWidgets.QTreeWidgetItem(child)
+                    grandchild = TreeWidgetItem(child)
 
                     grandchild.setFlags(grandchild.flags() | qtpy.QtCore.Qt.ItemIsUserCheckable)
 
@@ -463,10 +463,10 @@ class FeatureSelectionWidget(qtpy.QtWidgets.QWidget):
 
                     grandchild.setCheckState(0, qtpy.QtCore.Qt.Unchecked)
 
+        self.tree_widget.itemChanged.connect(self._on_change)
+
         self.layout().addWidget(self.tree_widget)
 
-    def on_item_clicked(self):
-        item = self.tree_widget.currentItem()
-
-        print(item)
-
+    def _on_change(self, item: TreeWidgetItem, column: int) -> None:
+        if column == 0 and (item.check_state != item.checkState(0)):
+            item.check_state = item.checkState(0)
