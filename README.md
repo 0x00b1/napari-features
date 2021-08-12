@@ -6,4 +6,4 @@
 [![tests](https://github.com/0x00b1/napari-features/workflows/tests/badge.svg)](https://github.com/0x00b1/napari-features/actions)
 [![codecov](https://codecov.io/gh/0x00b1/napari-features/branch/master/graph/badge.svg)](https://codecov.io/gh/0x00b1/napari-features)
 
-An extensible, general-purpose feature extraction plug-in for the [Napari image viewer](https://napari.org).
+An extensible, general-purpose feature extraction plug-in for the [Napari](https://napari.org) image viewer.
