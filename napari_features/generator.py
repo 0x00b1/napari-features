@@ -12,7 +12,12 @@ import skimage.segmentation
 
 
 class Generator(collections.abc.Iterator):
-    def __init__(self, masks, image, selected):
+    def __init__(self, masks, image, selected=None):
+        if selected is None:
+            self.selected = {}
+        else:
+            self.selected = selected
+
         self.cache = {}
 
         if masks.shape[-1] == 4:
