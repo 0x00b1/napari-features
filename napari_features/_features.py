@@ -33,7 +33,7 @@ def features(
 
     masks.properties["features"] = data.to_dict()
 
-    dock_widget.table.value = masks.properties
+    dock_widget.table.value = masks.properties["features"]
 
 
 @napari_plugin_engine.napari_hook_implementation
