@@ -8,7 +8,7 @@ import qtpy.QtCore
 
 from napari_features._tree_widget_item import TreeWidgetItem
 
-resource_filename = pkg_resources.resource_filename(napari_features.__name__, "./data/translations/en.json")
+resource_filename = pkg_resources.resource_filename(napari_features.__name__, "/data/translations/en.json")
 
 with open(resource_filename, "r") as fp:
     FEATURES = json.load(fp)
