@@ -6,7 +6,7 @@ import pandas
 from ._dock_widget import DockWidget
 from .generator import Generator
 from ._feature_selection_widget import FeatureSelectionWidget
-
+import numpy as np
 
 def features(
         image: napari.layers.Image,
@@ -23,7 +23,7 @@ def features(
 
     viewer.window.add_dock_widget(feature_selection_widget)
 
-    generator = Generator(masks.data, image.data, feature_selection_widget.selected)
+    generator = Generator(np.asarray(masks.data), np.asarray(image.data), feature_selection_widget.selected)
 
     data = pandas.DataFrame([feature for feature in generator], columns=generator.columns)
 
