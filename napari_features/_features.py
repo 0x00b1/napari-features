@@ -13,12 +13,6 @@ def features(
         masks: napari.layers.Labels,
         viewer: napari.Viewer
 ):
-    dock_widget = DockWidget()
-
-    viewer.window.add_dock_widget(dock_widget, area="bottom")
-
-    viewer.window.add_dock_widget(dock_widget)
-
     feature_selection_widget = FeatureSelectionWidget()
 
     viewer.window.add_dock_widget(feature_selection_widget)
