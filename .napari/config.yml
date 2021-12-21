@@ -2,3 +2,10 @@ authors:
   - name: "Allen Goodman"
     orcid: "0000-0002-6434-2320"
 summary: "extensible, general-purpose feature extraction"
+
+# Add labels the plugin from the EDAM Bioimaging ontology
+labels:
+  ontology: EDAM-BIOIMAGING:alpha06
+  terms:
+  - Image feature detection
+  - Object feature extraction
